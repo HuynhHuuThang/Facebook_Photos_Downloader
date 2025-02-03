@@ -1,3 +1,4 @@
+import asyncio
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -18,7 +19,7 @@ options.add_argument("--enable-unsafe-webgl")
 # launch the Chrome WebDriver 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-def facebook_login():
+async def facebook_login():
     # open facebook login page
     driver.get("https://www.facebook.com/login")
 
@@ -33,9 +34,9 @@ def facebook_login():
     password_imput.send_keys(Keys.RETURN)
     time.sleep(5)
 
-def scraper(element_class_name):
+async def scraper(element_class_name):
     
-
+    # await facebook_login()
     # Extract Images URLs
     # Navigate to the specified Facebook page
     driver.get("https://web.facebook.com/Gaixinh24h.tv/photos")
@@ -44,7 +45,7 @@ def scraper(element_class_name):
     # with open("page_source.html", "w", encoding="utf-8") as f:  # UTF-8 encoding is important
     #   f.write(html_source) # Or f.write(element_html) or f.write(element_outer_html)
 
-    
+    photos_elements = await fnd_element(element_class_name) 
     for element in photos_elements:
         with open("element_urls.txt", "a") as f:
             f.write(element.get_attribute("src") + "\n")
@@ -52,8 +53,9 @@ def scraper(element_class_name):
 async def fnd_element(element_class_name):
     photos_elements = []
     photos_elements = driver.find_elements(By.CLASS_NAME, element_class_name)
-    
+    return photos_elements    
 
 
 element_class_name = "x1i10hfl xjbqb8w x1ejq31n xd10rxx x1sy0etr x17r0tee x972fbf xcfux6l x1qhh985 xm0m39n x9f619 x1ypdohk xe8uvvx xdj266r x11i5rnm xat24cr x1mh8g0r xexx8yu x4uap5 x18d9i69 xkhd6sd x16tdsg8 x1hl2dhg xggy1nq x1a2a7pz x1heor9g x1sur9pj xkrqix3 x1s688f x1lliihq x5yr21d x1n2onr6 xh8yej3"
-scraper(element_class_name)
+asyncio.run(scraper(element_class_name))
+
